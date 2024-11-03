@@ -12,6 +12,13 @@ public class GenericRepository<T>(StoreContext context) : IGenericRepository<T> 
         context.Set<T>().Add(entity);
     }
 
+    public async Task<int> CountAsync(ISpesification<T> spec)
+    {
+        var query = context.Set<T>().AsQueryable();
+        query = spec.ApplyCriteria(query);
+        return await query.CountAsync();
+    }
+
     public bool Exist(int id)
     {
         return context.Set<T>().Any(x => x.Id == id);
