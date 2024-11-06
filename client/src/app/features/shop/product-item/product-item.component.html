@@ -1,5 +1,5 @@
 @if (productaja) {
-    <mat-card appearance="raised">
+    <mat-card appearance="raised" routerLink="/shop/{{productaja.id}}" class="product-card">
         <img src="{{productaja.pictureUrl}}" alt="image of {{productaja.name}}">
         <mat-card-content class="mt-2">
             <h2 class="text-sm font-semibold uppercase">{{productaja.name}}</h2>
