@@ -18,7 +18,7 @@ $customTheme: mat.define-theme();
 }
 
 .container {
-    @apply mx-auto max-w-screen-2xl
+    @apply mx-auto max-w-screen-xl
 }
 
 .text-primary {
@@ -31,4 +31,16 @@ button.match-input-height{
 
 .mdc-notched-outline__notch{
     border-right-style: none !important;
+}
+
+.mat-mdc-snack-bar-container.snack-error{
+    --mdc-snackbar-container-color: red;
+    --mdc-snack-bar-button-color: #fff;
+    --mdc-snackbar-supporting-text-color: #fff;
+}
+
+.mat-mdc-snack-bar-container.snack-success{
+    --mdc-snackbar-container-color: green;
+    --mdc-snack-bar-button-color: #fff;
+    --mdc-snackbar-supporting-text-color: #fff;
 }
