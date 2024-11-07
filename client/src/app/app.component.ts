@@ -4,7 +4,7 @@ import { HeaderComponent } from "./layout/header/header.component";
 import { HttpClient } from '@angular/common/http';
 import { Pagination } from './shared/models/pagination';
 import { Product } from './shared/models/product';
-import { ShopService } from './core/service/shop.service';
+import { ShopService } from './core/services/shop.service';
 import { ShopComponent } from "./features/shop/shop.component";
 
 
