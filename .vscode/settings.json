@@ -1,1 +1,23 @@
-{}
+{
+  "workbench.colorCustomizations": {
+    "terminal.background": "#2D2A2E", // Background dark greyish purple
+    "terminal.foreground": "#D1D1D6", // Soft light grey for text
+    "terminalCursor.foreground": "#FFCC00", // Cursor bright yellow for visibility
+    "terminal.ansiBlack": "#2E2C2B", // Dark grey for base blacks
+    "terminal.ansiRed": "#FF5370", // Soft red for errors
+    "terminal.ansiGreen": "#C3E88D", // Light mint green for success
+    "terminal.ansiYellow": "#FFCB6B", // Soft yellow for warnings
+    "terminal.ansiBlue": "#82AAFF", // Soft blue for informational messages
+    "terminal.ansiMagenta": "#C792EA", // Light purple for highlights
+    "terminal.ansiCyan": "#89DDFF", // Cyan for secondary info
+    "terminal.ansiWhite": "#FFFFFF", // White for regular text
+    "terminal.ansiBrightBlack": "#5C5856", // Dimmed grey for muted text
+    "terminal.ansiBrightRed": "#FF6E6E", // Bright red for urgent messages
+    "terminal.ansiBrightGreen": "#B9F6CA", // Bright mint green
+    "terminal.ansiBrightYellow": "#FFFFA5", // Pale yellow for bright warnings
+    "terminal.ansiBrightBlue": "#ADD8FF", // Soft sky blue for emphasis
+    "terminal.ansiBrightMagenta": "#F6A1FF", // Bright lavender
+    "terminal.ansiBrightCyan": "#A4FFFF", // Bright aqua
+    "terminal.ansiBrightWhite": "#F0F0F0" // Very light grey for contrast
+  }
+}
