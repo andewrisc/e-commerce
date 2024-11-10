@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, forwardRef, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -8,11 +8,14 @@ import { errorInterceptor } from './core/interceptor/error.interceptor';
 import { loadingInterceptor } from './core/interceptor/loading.interceptor';
 import { InitService } from './core/services/init.service';
 import { lastValueFrom } from 'rxjs';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { TextInputComponent } from './shared/components/text-input/text-input.component';
 
-function initializeApp(initService: InitService){
+function initializeApp(initService: InitService) {
   return () => lastValueFrom(initService.init()).finally(() => {
     const splash = document.getElementById('initial-splash');
-    if(splash){
+    if (splash) {
       splash.remove();
     }
   })
@@ -23,12 +26,21 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }), 
     provideRouter(routes), 
     provideAnimationsAsync(),
-    provideHttpClient(withInterceptors([errorInterceptor, loadingInterceptor])),
+    provideHttpClient(withInterceptors([
+      errorInterceptor, 
+      loadingInterceptor,
+      authInterceptor
+    ])),
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
       multi: true,
       deps: [InitService]
+    },
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => TextInputComponent),
+      multi: true,
     }
   ]
 };
