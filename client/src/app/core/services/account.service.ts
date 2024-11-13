@@ -59,7 +59,14 @@ export class AccountService {
   }
 
   updateAddress(address: Address) {
-    return this.http.post(this.baseUrl + 'account/address', address);
+    return this.http.post(this.baseUrl + 'account/address', address).pipe(
+      tap(() => {
+        this.currentUser.update(user => {
+          if(user) user.address = address;
+          return user;
+        })
+      })
+    )
   }
 
   getAuthState(){
