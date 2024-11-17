@@ -6,6 +6,7 @@ using Infrastructure;
 using StackExchange.Redis;
 using Core.Entities;
 using Infrastructure.Services;
+using API.SignalR;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,7 @@ builder.Services.AddDbContext<StoreContext>(opt =>
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
 {
     var connString = builder.Configuration.GetConnectionString("Redis") ?? throw new Exception("Cannot get redis connection string");
@@ -31,6 +33,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<AppUser>()
     .AddEntityFrameworkStores<StoreContext>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddSignalR();
 
 builder.Services.AddCors();
 
@@ -45,10 +48,14 @@ app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials()
 //     .AllowAnyOrigin()
 //     .AllowAnyMethod()
 //     .AllowAnyHeader());
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
 app.MapGroup("api").MapIdentityApi<AppUser>(); //api/login
+app.MapHub<NotificationHub>("/hub/notifications");
+
 try
 {
     using var scope = app.Services.CreateScope();

@@ -7,10 +7,11 @@ using Stripe;
 namespace Infrastructure.Services;
 
 public class PaymentService(IConfiguration config,
-ICartService cartService,
-IGenericRepository<Core.Entities.Product> productRepo,
-IGenericRepository<DeliveryMethod> dmRepo) : IPaymentService
+ICartService cartService, IUnitOfWork unit
+) : IPaymentService
 {
+//     IGenericRepository<Core.Entities.Product> productRepo,
+// IGenericRepository<DeliveryMethod> dmRepo
     public async Task<ShoppingCart?> CreateOrUpdatePaymentIntent(string cartId)
     {
         StripeConfiguration.ApiKey = config["StripeSettings:SecretKey"];
@@ -22,7 +23,7 @@ IGenericRepository<DeliveryMethod> dmRepo) : IPaymentService
 
         if(cart.DeliveryMethodId.HasValue)
         {
-            var deliveryMethod = await dmRepo.GetByIdAsync((int)cart.DeliveryMethodId);
+            var deliveryMethod = await unit.Repository<DeliveryMethod>().GetByIdAsync((int)cart.DeliveryMethodId);
 
             if(deliveryMethod == null) return null;
 
@@ -31,7 +32,7 @@ IGenericRepository<DeliveryMethod> dmRepo) : IPaymentService
         
         foreach (var item in cart.Items)
         {
-            var productItem = await productRepo.GetByIdAsync(item.ProductId);
+            var productItem = await unit.Repository<Core.Entities.Product>().GetByIdAsync(item.ProductId);
 
             if(productItem == null) return null;
 
@@ -44,7 +45,7 @@ IGenericRepository<DeliveryMethod> dmRepo) : IPaymentService
         var service = new PaymentIntentService();
         PaymentIntent? intent = null;
 
-        if(string.IsNullOrEmpty(cart.PaymentItendId))
+        if(string.IsNullOrEmpty(cart.PaymentIntentId))
         {
             var options = new PaymentIntentCreateOptions
             {
@@ -53,7 +54,7 @@ IGenericRepository<DeliveryMethod> dmRepo) : IPaymentService
                 PaymentMethodTypes = ["card"]
             };
             intent = await service.CreateAsync(options);
-            cart.PaymentItendId = intent.Id;
+            cart.PaymentIntentId = intent.Id;
             cart.ClientSecret = intent.ClientSecret;
         }
         else
@@ -62,7 +63,7 @@ IGenericRepository<DeliveryMethod> dmRepo) : IPaymentService
             {
                 Amount = (long)cart.Items.Sum(x => x.Quantity * (x.Price * 100)) + (long)shippingPrice * 100,
             };
-            intent = await service.UpdateAsync(cart.PaymentItendId, options);
+            intent = await service.UpdateAsync(cart.PaymentIntentId, options);
         }
 
         await cartService.SetCartAsync(cart);
