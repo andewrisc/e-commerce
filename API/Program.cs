@@ -29,10 +29,12 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
     return ConnectionMultiplexer.Connect(configuration);
 });
 builder.Services.AddSingleton<ICartService, CartService>();
+builder.Services.AddSingleton<IResponseCacheService, ResponseCacheService>();
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<AppUser>()
     .AddEntityFrameworkStores<StoreContext>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+
 builder.Services.AddSignalR();
 
 builder.Services.AddCors();
@@ -51,10 +53,15 @@ app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials()
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseDefaultFiles(); //spa
+app.UseStaticFiles(); //spa
+
 app.MapControllers();
 
 app.MapGroup("api").MapIdentityApi<AppUser>(); //api/login
 app.MapHub<NotificationHub>("/hub/notifications");
+
+app.MapFallbackToController("Index","Fallback"); //spa in backend and frronte will be fallback
 
 try
 {
